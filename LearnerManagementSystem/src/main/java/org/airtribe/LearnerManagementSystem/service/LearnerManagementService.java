@@ -16,7 +16,13 @@ import org.airtribe.LearnerManagementSystem.repository.CohortRepository;
 import org.airtribe.LearnerManagementSystem.repository.CourseRepository;
 import org.airtribe.LearnerManagementSystem.repository.LearnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
@@ -32,7 +38,7 @@ public class LearnerManagementService {
   private CourseRepository _courseRepository;
 
   public Learner createLearner(Learner learner) {
-    return _learnerRepository.save(learner);
+      return _learnerRepository.save(learner);
   }
 
   public List<Learner> getAllLearners() {
@@ -46,16 +52,16 @@ public class LearnerManagementService {
     }
     // Try catch
     // throws
-    return _learnerRepository.findById(learnerId).get();
+    return learnerOptional.get();
   }
 
   public List<Learner> findByLearnerName(String learnerName) {
     return _learnerRepository.findByLearnerName(learnerName);
   }
 
-  public List<Learner> findByLearnerEmail(String learnerEmail) {
-    return _learnerRepository.findByLearnerEmail(learnerEmail);
-  }
+//  public List<Learner> findByLearnerEmail(String learnerEmail) {
+//    return _learnerRepository.findByLearnerEmail(learnerEmail);
+//  }
 
   public List<Learner> findByLearnerNameAndLearnerEmail(String learnerName, String learnerEmail) {
     return _learnerRepository.findByLearnerNameAndLearnerEmail(learnerName, learnerEmail);
@@ -71,7 +77,7 @@ public class LearnerManagementService {
     if (learnerName!=null) {
       return findByLearnerName(learnerName);
     }
-    return findByLearnerEmail(learnerEmail);
+    return null;
   }
 
   public Cohort createCohort(Cohort cohort) {
@@ -171,6 +177,7 @@ public class LearnerManagementService {
     return _learnerRepository.save(existing);
   }
 
+
   public void deleteLearner(Long learnerId) throws LearnerNotFoundException {
     if (!_learnerRepository.existsById(learnerId)) {
       throw new LearnerNotFoundException("Learner not found with id " + learnerId);
@@ -257,6 +264,30 @@ public class LearnerManagementService {
     }
     cohort.getLearners().removeIf(l -> l.getLearnerId().equals(learnerId));
     return _cohortRepository.save(cohort);
+  }
+
+  public Cohort createAndMapLearnersToCohort(Long cohortId, List<Learner> learners) throws CohortNotFoundException {
+    Optional<Cohort> cohortOptional = _cohortRepository.findById(cohortId);
+    if (cohortOptional.isEmpty()) {
+      throw new CohortNotFoundException("Cohort not found with the Id " + cohortId);
+    }
+
+    cohortOptional.get().getLearners().addAll(learners);
+    return _cohortRepository.save(cohortOptional.get());
+
+  }
+
+  public Page<Cohort> fetchPaginatedAndSortedCohorts(int pageSize, int pageNumber, String sortDir, String sortBy) {
+    Sort.Direction direction;
+    if (sortDir.equals("asc")) {
+      direction = Sort.Direction.ASC;
+    } else {
+      direction = Sort.Direction.DESC;
+    }
+
+    Pageable pageable = PageRequest.of(pageNumber, pageSize, direction, sortBy);
+
+    return _cohortRepository.findAll(pageable);
   }
 }
 

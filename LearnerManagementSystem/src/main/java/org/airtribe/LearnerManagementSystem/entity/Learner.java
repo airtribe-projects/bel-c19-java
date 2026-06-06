@@ -6,19 +6,31 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 
 
 @Entity
+@Valid
 public class Learner {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long learnerId;
 
+  @NotNull
+  @NotEmpty
   private String learnerName;
 
+  @Email
   private String learnerEmail;
 
+  @NotNull
+  @NotEmpty
+  @Positive
   private String learnerPhone;
 
   @ManyToMany(mappedBy = "learners")
@@ -39,6 +51,12 @@ public class Learner {
     this.learnerEmail = learnerEmail;
     this.learnerPhone = learnerPhone;
     this.cohorts = cohorts;
+  }
+
+  public Learner(String learnerName, String learnerEmail, String learnerPhone) {
+    this.learnerName = learnerName;
+    this.learnerEmail = learnerEmail;
+    this.learnerPhone = learnerPhone;
   }
 
   public Learner() {

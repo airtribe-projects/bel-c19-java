@@ -1,6 +1,7 @@
 package org.airtribe.LearnerManagementSystem.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.airtribe.LearnerManagementSystem.entity.Learner;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.NativeQuery;
@@ -15,7 +16,7 @@ public interface LearnerRepository extends JpaRepository<Learner, Long> {
   @Query("select l.learnerEmail from Learner l where l.learnerName = ?1")
   public Learner searchMeLearner(String learnerName);
 
-  public List<Learner> findByLearnerEmail(String learnerEmail);
+  public Optional<Learner> findByLearnerEmail(String learnerEmail);
 
   public List<Learner> findByLearnerNameAndLearnerEmail(String learnerName, String learnerEmail);
 }

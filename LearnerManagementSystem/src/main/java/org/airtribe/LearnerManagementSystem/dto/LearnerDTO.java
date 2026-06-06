@@ -23,6 +23,12 @@ public class LearnerDTO {
     this.cohortDTO = cohortDTO;
   }
 
+  public LearnerDTO(String learnerName, String learnerEmail, String learnerPhone) {
+    this.learnerName = learnerName;
+    this.learnerEmail = learnerEmail;
+    this.learnerPhone = learnerPhone;
+  }
+
   public LearnerDTO() {
 
   }

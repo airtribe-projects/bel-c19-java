@@ -1,5 +1,6 @@
 package org.airtribe.LearnerManagementSystem.controller;
 
+import jakarta.validation.Valid;
 import java.util.Date;
 import java.util.List;
 import org.airtribe.LearnerManagementSystem.dto.LearnerList;
@@ -42,10 +43,16 @@ public class CohortController {
     return _learnerManagementService.assignLearnerToCohort(learnerId, cohortId);
   }
 
+//  @PostMapping("/cohorts/{cohortId}/learners")
+//  public Cohort mapLearnersToCohorts(@PathVariable("cohortId") Long cohortId, @RequestBody LearnerList learnerList)
+//      throws CohortNotFoundException {
+//    return _learnerManagementService.mapLearnersToCohort(cohortId, learnerList.getLearnerIds());
+//  }
+
   @PostMapping("/cohorts/{cohortId}/learners")
-  public Cohort mapLearnersToCohorts(@PathVariable("cohortId") Long cohortId, @RequestBody LearnerList learnerList)
+  public Cohort createAndMapLearnersToCohort(@PathVariable("cohortId") Long cohortId, @RequestBody List<Learner> learners)
       throws CohortNotFoundException {
-    return _learnerManagementService.mapLearnersToCohort(cohortId, learnerList.getLearnerIds());
+    return _learnerManagementService.createAndMapLearnersToCohort(cohortId, learners);
   }
 
   @GetMapping("/cohorts")

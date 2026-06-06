@@ -1,5 +1,6 @@
 package org.airtribe.LearnerManagementSystem.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,7 +20,7 @@ public class Course {
 
   private String courseDescription;
 
-  @OneToMany(mappedBy = "course")
+  @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
   private List<Cohort> cohorts;
 
   public Course(Long courseId, String courseName, String courseDescription, List<Cohort> cohorts) {

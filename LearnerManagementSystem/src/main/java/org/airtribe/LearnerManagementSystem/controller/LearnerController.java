@@ -1,7 +1,10 @@
 package org.airtribe.LearnerManagementSystem.controller;
 
+import jakarta.validation.Valid;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.airtribe.LearnerManagementSystem.dto.LearnerDTO;
 import org.airtribe.LearnerManagementSystem.entity.ErrorResponse;
 import org.airtribe.LearnerManagementSystem.entity.Learner;
@@ -11,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.View;
 
 
 @RestController
@@ -31,9 +37,10 @@ public class LearnerController {
   @Autowired
   private LearnerManagementService _learnerManagementService;
 
+
   // {"learnerName":}
   @PostMapping("/learners")
-  public Learner createLearner(@RequestBody Learner learner) {
+  public Learner createLearner(@Valid @RequestBody Learner learner) {
     return _learnerManagementService.createLearner(learner);
   }
 
@@ -52,6 +59,8 @@ public class LearnerController {
 //  public Learner getLearnerByName(@PathVariable("learnerName") String learnerName) {
 //    return _learnerManagementService.findByLearnerName(learnerName).get(0);
 //  }
+
+//  _learnerController.fetchLearnersByName
 
   @GetMapping("/learners")
   public List<LearnerDTO> fetchLearnersByName(@RequestParam(value = "learnerName", required = false) String learnerName,
@@ -76,6 +85,9 @@ public class LearnerController {
   public ErrorResponse handleLearnerNotFoundException(LearnerNotFoundException ex) {
     return new ErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage(), new Date().toInstant().toEpochMilli(), ex.getStackTrace().toString());
   }
+
+
+
 
 }
 
