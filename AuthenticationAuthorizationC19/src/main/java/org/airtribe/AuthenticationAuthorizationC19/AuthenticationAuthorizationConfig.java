@@ -2,12 +2,14 @@ package org.airtribe.AuthenticationAuthorizationC19;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 
 @Configuration
+@EnableMethodSecurity
 public class AuthenticationAuthorizationConfig {
   @Bean
   public BCryptPasswordEncoder _passwordEncoder() {
@@ -19,7 +21,7 @@ public class AuthenticationAuthorizationConfig {
     try {
       httpSecurity.csrf(csrf -> csrf.disable())
           .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-              .requestMatchers("/register")
+              .requestMatchers("/register", "/verifyRegistrationToken", "/signin", "/hello")
               .permitAll()
               .anyRequest()
               .authenticated())
